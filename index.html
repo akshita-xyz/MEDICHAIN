@@ -187,14 +187,291 @@
       </section>
 
       <section id="page-orders" class="page">
-        <div class="page-head"><div><div class="eyebrow">OPERATIONS</div><h1>Orders</h1><p>Manage replenishment and medicine purchase requests.</p></div><button class="primary-btn">＋ Create order</button></div>
-        <div class="stat-grid compact"><article class="stat-card"><span>Pending</span><strong>12</strong><small>Awaiting approval</small></article><article class="stat-card"><span>Processing</span><strong>8</strong><small>Being fulfilled</small></article><article class="stat-card"><span>Shipped</span><strong>24</strong><small>In transit</small></article><article class="stat-card"><span>Delivered</span><strong>183</strong><small class="positive">This month</small></article></div>
-        <article class="panel table-panel"><div class="panel-head"><div><h2>Recent orders</h2><p>Latest procurement activity</p></div><button class="ghost-btn">Export ↓</button></div><table><thead><tr><th>Order</th><th>Requested by</th><th>Items</th><th>Supplier</th><th>Date</th><th>Status</th></tr></thead><tbody>
-          <tr><td><b>#ORD-10482</b></td><td>Mohali Store</td><td>14</td><td>MedSupply India</td><td>Aug 29</td><td><span class="status warning">Pending</span></td></tr>
-          <tr><td><b>#ORD-10481</b></td><td>Chandigarh DC</td><td>28</td><td>PharmaLink</td><td>Aug 29</td><td><span class="status info">Processing</span></td></tr>
-          <tr><td><b>#ORD-10477</b></td><td>Delhi Warehouse</td><td>9</td><td>HealthRoute</td><td>Aug 28</td><td><span class="status healthy">Shipped</span></td></tr>
-        </tbody></table></article>
-      </section>
+  <div class="page-head">
+    <div>
+      <div class="eyebrow">OPERATIONS</div>
+      <h1>Orders</h1>
+      <p>Manage replenishment and medicine purchase requests.</p>
+    </div>
+    <button class="primary-btn" id="createOrderBtn">＋ Create order</button>
+  </div>
+
+  <div class="stat-grid compact">
+    <article class="stat-card">
+      <span>Pending</span>
+      <strong id="pendingOrderCount">12</strong>
+      <small>Awaiting approval</small>
+    </article>
+
+    <article class="stat-card">
+      <span>Processing</span>
+      <strong>8</strong>
+      <small>Being fulfilled</small>
+    </article>
+
+    <article class="stat-card">
+      <span>Shipped</span>
+      <strong>24</strong>
+      <small>In transit</small>
+    </article>
+
+    <article class="stat-card">
+      <span>Delivered</span>
+      <strong>183</strong>
+      <small class="positive">This month</small>
+    </article>
+  </div>
+
+  <article class="panel table-panel">
+    <div class="panel-head">
+      <div>
+        <h2>Recent orders</h2>
+        <p>Latest procurement activity</p>
+      </div>
+      <button class="ghost-btn" id="exportOrdersBtn">Export ↓</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>Requested by</th>
+          <th>Items</th>
+          <th>Supplier</th>
+          <th>Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody id="ordersTableBody">
+
+        <tr class="order-row"
+    data-order-id="ORD-10482"
+    data-facility="Mohali Store"
+    data-items="14"
+    data-supplier="MedSupply India"
+    data-date="Aug 29"
+    data-status="Pending">
+
+  <td><b>#ORD-10482</b></td>
+  <td>Mohali Store</td>
+  <td>14</td>
+  <td>MedSupply India</td>
+  <td>Aug 29</td>
+  <td><span class="status warning">Pending</span></td>
+</tr>
+
+<tr class="order-row"
+    data-order-id="ORD-10481"
+    data-facility="Chandigarh DC"
+    data-items="28"
+    data-supplier="PharmaLink"
+    data-date="Aug 29"
+    data-status="Processing">
+
+  <td><b>#ORD-10481</b></td>
+  <td>Chandigarh DC</td>
+  <td>28</td>
+  <td>PharmaLink</td>
+  <td>Aug 29</td>
+  <td><span class="status info">Processing</span></td>
+</tr>
+
+<tr class="order-row"
+    data-order-id="ORD-10477"
+    data-facility="Delhi Warehouse"
+    data-items="9"
+    data-supplier="HealthRoute"
+    data-date="Aug 28"
+    data-status="Shipped">
+
+  <td><b>#ORD-10477</b></td>
+  <td>Delhi Warehouse</td>
+  <td>9</td>
+  <td>HealthRoute</td>
+  <td>Aug 28</td>
+  <td><span class="status healthy">Shipped</span></td>
+</tr>
+
+      </tbody>
+    </table>
+  </article>
+</section>
+
+</section>
+
+<!-- Order details drawer -->
+<div class="drawer-backdrop hidden" id="orderDrawerBackdrop"></div>
+
+<aside class="inventory-drawer order-drawer" id="orderDrawer" aria-hidden="true">
+
+  <div class="drawer-head">
+    <div>
+      <div class="eyebrow">ORDER DETAILS</div>
+      <h2 id="orderDrawerId">#ORD-10482</h2>
+      <p id="orderDrawerStatus">Pending</p>
+    </div>
+
+    <button class="modal-close" id="orderDrawerClose">×</button>
+  </div>
+
+  <div class="drawer-status" id="orderDrawerStatusBadge">
+    Pending
+  </div>
+
+  <div class="drawer-grid">
+
+    <div>
+      <span>Requested by</span>
+      <b id="orderDrawerFacility">Mohali Store</b>
+    </div>
+
+    <div>
+      <span>Items</span>
+      <b id="orderDrawerItems">14</b>
+    </div>
+
+    <div>
+      <span>Supplier</span>
+      <b id="orderDrawerSupplier">MedSupply India</b>
+    </div>
+    <div>
+      <span>Order date</span>
+      <b id="orderDrawerDate">Aug 29</b>
+    </div>
+  </div>
+  <div class="drawer-section">
+    <div class="drawer-section-title">
+      <b>Order timeline</b>
+      <span>Current status</span>
+    </div>
+    <div class="movement">
+      <span class="movement-dot in"></span>
+      <div>
+        <b>Order created</b>
+        <small id="orderTimelineDate">Aug 29</small>
+      </div>
+      <strong>✓</strong>
+    </div>
+    <div class="movement">
+      <span class="movement-dot in"></span>
+
+      <div>
+        <b>Supplier review</b>
+        <small>Awaiting confirmation</small>
+      </div>
+
+      <strong>→</strong>
+    </div>
+
+    <div class="movement">
+      <span class="movement-dot out"></span>
+
+      <div>
+        <b>Fulfillment</b>
+        <small>Will begin after approval</small>
+      </div>
+
+      <strong>—</strong>
+    </div>
+
+  </div>
+
+  <div class="drawer-actions">
+
+    <button class="ghost-btn" id="orderDrawerCloseAction">
+      Done
+    </button>
+
+    <button class="primary-btn" id="orderApproveBtn">
+      Approve order
+    </button>
+
+  </div>
+
+</aside>
+
+<!-- Create Order Modal -->
+<div class="modal hidden" id="createOrderModal">
+
+    <div class="modal-card">
+
+        <button class="modal-close" id="createOrderClose">×</button>
+
+        <div class="eyebrow">OPERATIONS</div>
+
+        <h2>Create order</h2>
+
+        <p class="modal-subtitle">
+            Create a new medicine replenishment request.
+        </p>
+
+        <label class="form-label">
+            Medicine
+            <select id="orderMedicine">
+                <option>Insulin Glargine</option>
+                <option>Amoxicillin 500mg</option>
+                <option>Paracetamol 650mg</option>
+                <option>Morphine Sulfate</option>
+                <option>Azithromycin 250mg</option>
+            </select>
+        </label>
+
+        <label class="form-label">
+            Destination facility
+            <select id="orderFacility">
+                <option>Mohali Store</option>
+                <option>Chandigarh DC</option>
+                <option>Delhi Warehouse</option>
+                <option>Jaipur Hub</option>
+            </select>
+        </label>
+
+        <label class="form-label">
+            Supplier
+            <select id="orderSupplier">
+                <option>MedSupply India</option>
+                <option>PharmaLink</option>
+                <option>HealthRoute</option>
+            </select>
+        </label>
+
+        <label class="form-label">
+            Quantity
+            <input
+                id="orderQuantity"
+                type="number"
+                min="1"
+                value="20"
+            >
+        </label>
+
+        <label class="form-label">
+            Priority
+            <select id="orderPriority">
+                <option>Normal</option>
+                <option>High</option>
+                <option>Critical</option>
+            </select>
+        </label>
+
+        <div class="modal-actions">
+
+            <button class="ghost-btn" id="createOrderCancel">
+                Cancel
+            </button>
+
+            <button class="primary-btn" id="confirmCreateOrder">
+                Create order
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<section id="page-shipments" class="page">
 
 <section id="page-shipments" class="page">
   <div class="page-head">
@@ -508,9 +785,103 @@
     </div>
   </div>
 
- 
-  <div class="modal hidden" id="quickModal"><div class="modal-card"><button class="modal-close">×</button><div class="eyebrow">QUICK ACTION</div><h2>What do you want to do?</h2><button class="action-choice"><span>＋</span><div><b>Add inventory</b><small>Record new medicine stock</small></div></button><button class="action-choice"><span>↗</span><div><b>Create shipment</b><small>Start a new delivery</small></div></button><button class="action-choice"><span>!</span><div><b>Review alerts</b><small>See critical network issues</small></div></button></div></div>
+  <div class="modal hidden" id="orderModal">
 
+  <div class="modal-card">
+
+    <button class="modal-close" id="orderModalClose">×</button>
+
+    <div class="eyebrow">PROCUREMENT</div>
+
+    <h2>Create order</h2>
+
+    <p class="modal-subtitle">
+      Create a medicine replenishment request.
+    </p>
+
+    <label class="form-label">
+      Medicine
+      <select id="orderMedicine">
+        <option>Insulin Glargine</option>
+        <option>Paracetamol 650mg</option>
+        <option>Azithromycin 250mg</option>
+        <option>Morphine Sulfate</option>
+      </select>
+    </label>
+
+    <label class="form-label">
+      Quantity
+      <input id="orderQuantity" type="number" min="1" value="50">
+    </label>
+
+    <label class="form-label">
+      Supplier
+      <select id="orderSupplier">
+        <option>MedSupply India</option>
+        <option>PharmaLink</option>
+        <option>HealthRoute</option>
+      </select>
+    </label>
+
+    <label class="form-label">
+      Destination facility
+      <select id="orderFacility">
+        <option>Mohali Store</option>
+        <option>Chandigarh DC</option>
+        <option>Delhi Warehouse</option>
+        <option>Jaipur Hub</option>
+      </select>
+    </label>
+
+    <div class="modal-actions">
+      <button class="ghost-btn" id="orderCancel">Cancel</button>
+      <button class="primary-btn" id="confirmOrder">
+        Create order
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+ <div class="modal hidden" id="quickModal">
+
+  <div class="modal-card">
+
+    <button class="modal-close" id="quickModalClose">×</button>
+
+    <div class="eyebrow">QUICK ACTION</div>
+
+    <h2>What do you want to do?</h2>
+
+    <button class="action-choice" id="quickAddInventory">
+      <span>＋</span>
+      <div>
+        <b>Add inventory</b>
+        <small>Record new medicine stock</small>
+      </div>
+    </button>
+
+    <button class="action-choice" id="quickCreateShipment">
+      <span>↗</span>
+      <div>
+        <b>Create shipment</b>
+        <small>Start a new delivery</small>
+      </div>
+    </button>
+
+    <button class="action-choice" id="quickReviewAlerts">
+      <span>!</span>
+      <div>
+        <b>Review alerts</b>
+        <small>See critical network issues</small>
+      </div>
+    </button>
+
+  </div>
+
+</div>
+  
   <script src="app.js"></script>
 </body>
 </html>

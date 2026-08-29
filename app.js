@@ -55,15 +55,6 @@ modal?.addEventListener("click", e => {
   }
 });
 
-document.querySelectorAll(".action-choice").forEach(choice => {
-  choice.addEventListener("click", () => {
-    modal?.classList.add("hidden");
-
-    const label = choice.querySelector("b")?.textContent;
-
-    alert(`${label} is ready to be connected to the backend.`);
-  });
-});
 
 
 // ================= SETTINGS =================
@@ -941,3 +932,428 @@ document
 
     }
   );
+
+
+  // ============================================================
+// FINAL FRONTEND PASS — QUICK ACTIONS + ORDERS
+// ============================================================
+
+
+// ================= QUICK ACTIONS =================
+
+const quickModal = document.getElementById("quickModal");
+
+function closeQuickModal() {
+  quickModal?.classList.add("hidden");
+}
+
+document.getElementById("quickModalClose")?.addEventListener(
+  "click",
+  closeQuickModal
+);
+
+quickModal?.addEventListener("click", event => {
+  if (event.target === quickModal) {
+    closeQuickModal();
+  }
+});
+
+
+// Add inventory
+document.getElementById("quickAddInventory")?.addEventListener(
+  "click",
+  () => {
+    closeQuickModal();
+
+    showPage("inventory");
+
+    setTimeout(() => {
+      document.getElementById("addInventoryBtn")?.click();
+    }, 100);
+  }
+);
+
+
+// Create shipment
+document.getElementById("quickCreateShipment")?.addEventListener(
+  "click",
+  () => {
+    closeQuickModal();
+
+    showPage("shipments");
+
+    setTimeout(() => {
+      document.getElementById("newShipmentBtn")?.click();
+    }, 100);
+  }
+);
+
+
+// Review alerts
+document.getElementById("quickReviewAlerts")?.addEventListener(
+  "click",
+  () => {
+    closeQuickModal();
+    showPage("alerts");
+  }
+);
+
+
+// ================= ORDERS =================
+
+const orderModal = document.getElementById("orderModal");
+const ordersTableBody = document.getElementById("ordersTableBody");
+const pendingOrderCount = document.getElementById("pendingOrderCount");
+
+function openOrderModal() {
+  orderModal?.classList.remove("hidden");
+}
+
+function closeOrderModal() {
+  orderModal?.classList.add("hidden");
+}
+
+document.getElementById("createOrderBtn")?.addEventListener(
+  "click",
+  openOrderModal
+);
+
+document.getElementById("orderModalClose")?.addEventListener(
+  "click",
+  closeOrderModal
+);
+
+document.getElementById("orderCancel")?.addEventListener(
+  "click",
+  closeOrderModal
+);
+
+orderModal?.addEventListener("click", event => {
+  if (event.target === orderModal) {
+    closeOrderModal();
+  }
+});
+
+
+// Create new order
+document.getElementById("confirmOrder")?.addEventListener(
+  "click",
+  () => {
+
+    const medicine =
+      document.getElementById("orderMedicine")?.value;
+
+    const quantity =
+      Number(document.getElementById("orderQuantity")?.value);
+
+    const supplier =
+      document.getElementById("orderSupplier")?.value;
+
+    const facility =
+      document.getElementById("orderFacility")?.value;
+
+
+    // Validation
+    if (!medicine || !Number.isFinite(quantity) || quantity < 1) {
+      alert("Please enter a valid medicine quantity.");
+      return;
+    }
+
+
+    // Generate frontend order number
+    const orderNumber =
+      `#ORD-${10500 + ordersTableBody.children.length}`;
+
+
+    // Create table row
+    const row = document.createElement("tr");
+
+    row.className = "order-row";
+
+    row.innerHTML = `
+      <td><b>${orderNumber}</b></td>
+      <td>${facility}</td>
+      <td>${quantity}</td>
+      <td>${supplier}</td>
+      <td>Aug 29</td>
+      <td>
+        <span class="status warning">Pending</span>
+      </td>
+    `;
+
+
+    // Put newest order at top
+    ordersTableBody.prepend(row);
+
+
+    // Update pending count
+    if (pendingOrderCount) {
+      pendingOrderCount.textContent =
+        Number(pendingOrderCount.textContent) + 1;
+    }
+
+
+    closeOrderModal();
+
+
+    alert(
+      `Order created successfully.\n\n` +
+      `${orderNumber}\n` +
+      `${medicine} — ${quantity.toLocaleString()} units`
+    );
+  }
+);
+
+
+// ================= ORDER EXPORT =================
+
+document.getElementById("exportOrdersBtn")?.addEventListener(
+  "click",
+  () => {
+
+    const rows = [
+      [
+        "Order",
+        "Requested by",
+        "Items",
+        "Supplier",
+        "Date",
+        "Status"
+      ]
+    ];
+
+
+    document
+      .querySelectorAll("#ordersTableBody tr")
+      .forEach(row => {
+
+        const cells = row.querySelectorAll("td");
+
+        if (cells.length < 6) return;
+
+        rows.push([
+          cells[0].textContent.trim(),
+          cells[1].textContent.trim(),
+          cells[2].textContent.trim(),
+          cells[3].textContent.trim(),
+          cells[4].textContent.trim(),
+          cells[5].textContent.trim()
+        ]);
+
+      });
+
+
+    const csv = rows
+      .map(row =>
+        row
+          .map(value =>
+            `"${String(value).replace(/"/g, '""')}"`
+          )
+          .join(",")
+      )
+      .join("\n");
+
+
+    const blob = new Blob(
+      [csv],
+      { type: "text/csv;charset=utf-8;" }
+    );
+
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "medichain-orders.csv";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(url);
+  }
+);
+
+
+// ==================== ORDERS ====================
+
+const orderRows = document.querySelectorAll(".order-row");
+
+const orderDrawer = document.getElementById("orderDrawer");
+const orderDrawerBackdrop = document.getElementById("orderDrawerBackdrop");
+
+const orderDrawerId = document.getElementById("orderDrawerId");
+const orderDrawerStatus = document.getElementById("orderDrawerStatus");
+const orderDrawerStatusBadge = document.getElementById("orderDrawerStatusBadge");
+
+const orderDrawerFacility = document.getElementById("orderDrawerFacility");
+const orderDrawerItems = document.getElementById("orderDrawerItems");
+const orderDrawerSupplier = document.getElementById("orderDrawerSupplier");
+const orderDrawerDate = document.getElementById("orderDrawerDate");
+const orderTimelineDate = document.getElementById("orderTimelineDate");
+
+const orderDrawerClose = document.getElementById("orderDrawerClose");
+const orderDrawerCloseAction = document.getElementById("orderDrawerCloseAction");
+const orderApproveBtn = document.getElementById("orderApproveBtn");
+
+function openOrderDrawer(row) {
+
+    const data = row.dataset;
+
+    orderDrawerId.textContent = `#${data.orderId}`;
+    orderDrawerStatus.textContent = data.status;
+    orderDrawerStatusBadge.textContent = data.status;
+
+    orderDrawerFacility.textContent = data.facility;
+    orderDrawerItems.textContent = data.items;
+    orderDrawerSupplier.textContent = data.supplier;
+    orderDrawerDate.textContent = data.date;
+    orderTimelineDate.textContent = data.date;
+
+    orderDrawer.classList.remove("hidden");
+    orderDrawer.classList.add("open");
+
+    orderDrawerBackdrop.classList.remove("hidden");
+    orderDrawer.setAttribute("aria-hidden", "false");
+}
+
+function closeOrderDrawer() {
+
+    orderDrawer.classList.remove("open");
+    orderDrawer.classList.add("hidden");
+
+    orderDrawerBackdrop.classList.add("hidden");
+    orderDrawer.setAttribute("aria-hidden", "true");
+}
+
+orderRows.forEach(row => {
+
+    row.addEventListener("click", () => {
+        openOrderDrawer(row);
+    });
+
+});
+
+orderDrawerClose?.addEventListener("click", closeOrderDrawer);
+
+orderDrawerCloseAction?.addEventListener("click", closeOrderDrawer);
+
+orderDrawerBackdrop?.addEventListener("click", closeOrderDrawer);
+
+orderApproveBtn?.addEventListener("click", () => {
+
+    orderDrawerStatus.textContent = "Approved";
+    orderDrawerStatusBadge.textContent = "Approved";
+
+    orderApproveBtn.textContent = "Approved";
+    orderApproveBtn.disabled = true;
+
+});
+
+
+// ==================== CREATE ORDER ====================
+
+const createOrderBtn = document.getElementById("createOrderBtn");
+
+const createOrderModal = document.getElementById("createOrderModal");
+
+const createOrderClose = document.getElementById("createOrderClose");
+const createOrderCancel = document.getElementById("createOrderCancel");
+
+const confirmCreateOrder = document.getElementById("confirmCreateOrder");
+
+const orderMedicine = document.getElementById("orderMedicine");
+const orderFacility = document.getElementById("orderFacility");
+const orderSupplier = document.getElementById("orderSupplier");
+const orderQuantity = document.getElementById("orderQuantity");
+const orderPriority = document.getElementById("orderPriority");
+
+function openCreateOrderModal() {
+
+    createOrderModal.classList.remove("hidden");
+
+}
+
+function closeCreateOrderModal() {
+
+    createOrderModal.classList.add("hidden");
+
+}
+
+createOrderBtn?.addEventListener("click", openCreateOrderModal);
+
+createOrderClose?.addEventListener("click", closeCreateOrderModal);
+
+createOrderCancel?.addEventListener("click", closeCreateOrderModal);
+
+createOrderModal?.addEventListener("click", (event) => {
+
+    if (event.target === createOrderModal) {
+        closeCreateOrderModal();
+    }
+
+});
+
+confirmCreateOrder?.addEventListener("click", () => {
+
+    const medicine = orderMedicine.value;
+    const facility = orderFacility.value;
+    const supplier = orderSupplier.value;
+    const quantity = orderQuantity.value;
+    const priority = orderPriority.value;
+
+    if (!quantity || Number(quantity) < 1) {
+
+        alert("Please enter a valid quantity.");
+
+        return;
+
+    }
+
+    const newOrderId =
+        `ORD-${Math.floor(10500 + Math.random() * 500)}`;
+
+    const today = "Aug 29";
+
+    const newRow = document.createElement("tr");
+
+    newRow.className = "order-row";
+
+    newRow.dataset.orderId = newOrderId;
+    newRow.dataset.facility = facility;
+    newRow.dataset.items = quantity;
+    newRow.dataset.supplier = supplier;
+    newRow.dataset.date = today;
+    newRow.dataset.status = "Pending";
+
+    newRow.innerHTML = `
+        <td><b>#${newOrderId}</b></td>
+        <td>${facility}</td>
+        <td>${quantity}</td>
+        <td>${supplier}</td>
+        <td>${today}</td>
+        <td>
+            <span class="status warning">
+                Pending
+            </span>
+        </td>
+    `;
+
+    document
+        .getElementById("ordersTableBody")
+        .prepend(newRow);
+
+    newRow.addEventListener("click", () => {
+
+        openOrderDrawer(newRow);
+
+    });
+
+    closeCreateOrderModal();
+
+    alert(`Order #${newOrderId} created successfully.`);
+
+});
