@@ -196,11 +196,253 @@
         </tbody></table></article>
       </section>
 
-      <section id="page-shipments" class="page">
-        <div class="page-head"><div><div class="eyebrow">OPERATIONS</div><h1>Shipments</h1><p>Monitor active transportation and delivery conditions.</p></div><button class="primary-btn">＋ New shipment</button></div>
-        <div class="shipment-cards"><article class="route-card"><div class="route-head"><span class="status healthy">In transit</span><b>MC-28491</b></div><h3>Delhi Warehouse <span>→</span> Mohali Store</h3><div class="route-bar"><i style="width:78%"></i></div><div class="route-info"><span>78% complete</span><b>ETA 2h 18m</b></div><div class="temp">❄ Temperature <b>4.2°C</b> <span>✓ Within range</span></div></article><article class="route-card"><div class="route-head"><span class="status warning">Delayed</span><b>MC-28488</b></div><h3>Jaipur Hub <span>→</span> Chandigarh DC</h3><div class="route-bar"><i style="width:46%"></i></div><div class="route-info"><span>46% complete</span><b>ETA 5h 42m</b></div><div class="temp">❄ Temperature <b>5.1°C</b> <span>✓ Within range</span></div></article></div>
-        <article class="panel map-placeholder"><div class="map-grid"></div><div class="map-center"><span>⌖</span><b>Live network map</b><small>Route visualization will connect to live tracking</small></div></article>
-      </section>
+<section id="page-shipments" class="page">
+  <div class="page-head">
+    <div>
+      <div class="eyebrow">OPERATIONS</div>
+      <h1>Shipments</h1>
+      <p>Monitor active transportation and delivery conditions.</p>
+    </div>
+    <button class="primary-btn" id="newShipmentBtn">＋ New shipment</button>
+  </div>
+
+  <div class="shipment-overview">
+    <article class="stat-card">
+      <span>Active shipments</span>
+      <b>27</b>
+      <small>8 arriving today</small>
+    </article>
+
+    <article class="stat-card">
+      <span>In transit</span>
+      <b>19</b>
+      <small>70% of active shipments</small>
+    </article>
+
+    <article class="stat-card">
+      <span>Delayed</span>
+      <b>3</b>
+      <small>Requires attention</small>
+    </article>
+
+    <article class="stat-card">
+      <span>On-time rate</span>
+      <b>94.8%</b>
+      <small>↑ 2.1% this week</small>
+    </article>
+  </div>
+
+  <div class="shipment-cards">
+
+    <article class="route-card shipment-clickable"
+  data-shipment-id="MC-28491"
+  data-status="In transit"
+  data-origin="Delhi Warehouse"
+  data-destination="Mohali Store"
+  data-progress="78"
+  data-eta="2h 18m"
+  data-temperature="4.2°C"
+  data-driver="Rajesh Kumar"
+  data-vehicle="MH-12-TR-4821">
+
+      <div class="route-head">
+        <span class="status healthy">In transit</span>
+        <b>MC-28491</b>
+      </div>
+
+      <h3>Delhi Warehouse <span>→</span> Mohali Store</h3>
+
+      <div class="route-bar">
+        <i style="width:78%"></i>
+      </div>
+
+      <div class="route-info">
+        <span>78% complete</span>
+        <b>ETA 2h 18m</b>
+      </div>
+
+      <div class="temp">
+        ❄ Temperature
+        <b>4.2°C</b>
+        <span>✓ Within range</span>
+      </div>
+
+      <button class="track-btn">View live tracking →</button>
+    </article>
+
+
+    <article class="route-card shipment-clickable"
+  data-shipment-id="MC-28488"
+  data-status="Delayed"
+  data-origin="Jaipur Hub"
+  data-destination="Chandigarh DC"
+  data-progress="46"
+  data-eta="5h 42m"
+  data-temperature="5.1°C"
+  data-driver="Amit Singh"
+  data-vehicle="RJ-14-TR-2848">
+
+      <div class="route-head">
+        <span class="status warning">Delayed</span>
+        <b>MC-28488</b>
+      </div>
+
+      <h3>Jaipur Hub <span>→</span> Chandigarh DC</h3>
+
+      <div class="route-bar">
+        <i style="width:46%"></i>
+      </div>
+
+      <div class="route-info">
+        <span>46% complete</span>
+        <b>ETA 5h 42m</b>
+      </div>
+
+      <div class="temp">
+        ❄ Temperature
+        <b>5.1°C</b>
+        <span>✓ Within range</span>
+      </div>
+
+      <button class="track-btn">View live tracking →</button>
+    </article>
+
+  </div>
+
+  <article class="panel map-placeholder shipment-map">
+    <div class="map-grid"></div>
+
+    <div class="map-route">
+      <span class="map-node start">Delhi</span>
+      <div class="map-line">
+        <i style="width:78%"></i>
+      </div>
+      <span class="map-node end">Mohali</span>
+    </div>
+
+    <div class="map-center">
+      <span>⌖</span>
+      <b>Live network map</b>
+      <small>Shipment locations and routes update in real time</small>
+    </div>
+  </article>
+</section>
+
+<!-- Shipment details drawer -->
+<div class="drawer-backdrop hidden" id="shipmentDrawerBackdrop"></div>
+
+<aside class="inventory-drawer shipment-drawer"
+       id="shipmentDrawer"
+       aria-hidden="true">
+
+  <div class="drawer-head">
+    <div>
+      <div class="eyebrow">SHIPMENT DETAILS</div>
+      <h2 id="shipmentDrawerId">MC-28491</h2>
+      <p id="shipmentDrawerStatus">In transit</p>
+    </div>
+
+    <button class="modal-close" id="shipmentDrawerClose">×</button>
+  </div>
+
+  <div class="drawer-status" id="shipmentDrawerStatusBadge">
+    In transit
+  </div>
+
+  <div class="drawer-grid">
+
+    <div>
+      <span>Origin</span>
+      <b id="shipmentOrigin">Delhi Warehouse</b>
+    </div>
+
+    <div>
+      <span>Destination</span>
+      <b id="shipmentDestination">Mohali Store</b>
+    </div>
+
+    <div>
+      <span>Progress</span>
+      <b id="shipmentProgress">78%</b>
+    </div>
+
+    <div>
+      <span>ETA</span>
+      <b id="shipmentEta">2h 18m</b>
+    </div>
+
+  </div>
+
+  <div class="drawer-section">
+
+    <div class="drawer-section-title">
+      <b>Route progress</b>
+      <span id="shipmentProgressText">78% complete</span>
+    </div>
+
+    <div class="route-bar large">
+      <i id="shipmentProgressBar" style="width:78%"></i>
+    </div>
+
+    <div class="shipment-route-labels">
+      <span id="shipmentRouteOrigin">Delhi Warehouse</span>
+      <span id="shipmentRouteDestination">Mohali Store</span>
+    </div>
+
+  </div>
+
+  <div class="drawer-section">
+
+    <div class="drawer-section-title">
+      <b>Transport conditions</b>
+      <span>Live</span>
+    </div>
+
+    <div class="movement">
+      <span class="movement-dot in"></span>
+      <div>
+        <b>Temperature</b>
+        <small>Cold-chain range</small>
+      </div>
+      <strong id="shipmentTemperature">4.2°C</strong>
+    </div>
+
+    <div class="movement">
+      <span class="movement-dot in"></span>
+      <div>
+        <b>Driver</b>
+        <small>Assigned operator</small>
+      </div>
+      <strong id="shipmentDriver">Rajesh Kumar</strong>
+    </div>
+
+    <div class="movement">
+      <span class="movement-dot in"></span>
+      <div>
+        <b>Vehicle</b>
+        <small>Transport ID</small>
+      </div>
+      <strong id="shipmentVehicle">MH-12-TR-4821</strong>
+    </div>
+
+  </div>
+
+  <div class="drawer-actions">
+    <button class="ghost-btn" id="shipmentAlertBtn">
+      ⚠ Report issue
+    </button>
+
+    <button class="primary-btn" id="shipmentDrawerDone">
+      Done
+    </button>
+  </div>
+
+</aside>
+
+
+      
+
+
 
       <section id="page-suppliers" class="page">
         <div class="page-head"><div><div class="eyebrow">NETWORK</div><h1>Suppliers</h1><p>Manage trusted suppliers and monitor fulfillment performance.</p></div><button class="primary-btn">＋ Add supplier</button></div>
@@ -266,6 +508,7 @@
     </div>
   </div>
 
+ 
   <div class="modal hidden" id="quickModal"><div class="modal-card"><button class="modal-close">×</button><div class="eyebrow">QUICK ACTION</div><h2>What do you want to do?</h2><button class="action-choice"><span>＋</span><div><b>Add inventory</b><small>Record new medicine stock</small></div></button><button class="action-choice"><span>↗</span><div><b>Create shipment</b><small>Start a new delivery</small></div></button><button class="action-choice"><span>!</span><div><b>Review alerts</b><small>See critical network issues</small></div></button></div></div>
 
   <script src="app.js"></script>
