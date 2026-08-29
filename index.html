@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediChain — Supply Chain Control Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark"><span>+</span></div>
+        <div>
+          <strong>MediChain</strong>
+          <small>Supply Network</small>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <span class="workspace-dot"></span>
+        <div><b>North Region</b><small>Operations workspace</small></div>
+        <span class="chevron">⌄</span>
+      </div>
+
+      <nav class="nav">
+        <div class="nav-label">OVERVIEW</div>
+        <button class="nav-item active" data-page="dashboard"><span>⌂</span>Dashboard</button>
+
+        <div class="nav-label">OPERATIONS</div>
+        <button class="nav-item" data-page="inventory"><span>▣</span>Inventory <em>27</em></button>
+        <button class="nav-item" data-page="orders"><span>▤</span>Orders <em>12</em></button>
+        <button class="nav-item" data-page="shipments"><span>↗</span>Shipments</button>
+        <button class="nav-item" data-page="suppliers"><span>◇</span>Suppliers</button>
+
+        <div class="nav-label">INSIGHTS</div>
+        <button class="nav-item" data-page="alerts"><span>!</span>Alerts <em class="danger">8</em></button>
+        <button class="nav-item" data-page="analytics"><span>◔</span>Analytics</button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <button class="nav-item" data-page="settings"><span>⚙</span>Settings</button>
+        <div class="user-card">
+          <div class="avatar">RS</div>
+          <div><b>Rahul Sharma</b><small>Pharmacist</small></div>
+          <span>•••</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="mobile-brand"><div class="brand-mark"><span>+</span></div><b>MediChain</b></div>
+        <div class="breadcrumbs"><span>Operations</span><b>/</b><strong id="breadcrumb">Dashboard</strong></div>
+        <div class="top-actions">
+          <button class="icon-btn" title="Search">⌕</button>
+          <button class="icon-btn notification" title="Notifications">♢<i></i></button>
+          <div class="top-user"><div class="avatar small">RS</div><span>Rahul</span><b>⌄</b></div>
+        </div>
+      </header>
+
+      <section id="page-dashboard" class="page active-page">
+        <div class="page-head">
+          <div>
+            <div class="eyebrow"><span class="live-dot"></span> LIVE NETWORK STATUS</div>
+            <h1>Good morning, Rahul.</h1>
+            <p>Here's what needs your attention across the supply network today.</p>
+          </div>
+          <button class="primary-btn" id="quickAction">＋ Quick action</button>
+        </div>
+
+        <div class="stat-grid">
+          <article class="stat-card">
+            <div class="stat-top"><span>Inventory units</span><span class="stat-icon blue">▣</span></div>
+            <strong>12,480</strong>
+            <div class="stat-foot positive">↑ 4.8% <span>vs last week</span></div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>Active orders</span><span class="stat-icon violet">▤</span></div>
+            <strong>342</strong>
+            <div class="stat-foot positive">↑ 12 <span>since yesterday</span></div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-top"><span>In transit</span><span class="stat-icon teal">↗</span></div>
+            <strong>27</strong>
+            <div class="stat-foot neutral">8 arriving today</div>
+          </article>
+          <article class="stat-card alert-card">
+            <div class="stat-top"><span>Needs attention</span><span class="stat-icon red">!</span></div>
+            <strong>8</strong>
+            <div class="stat-foot negative">3 critical <span>requires action</span></div>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel inventory-health">
+            <div class="panel-head">
+              <div><h2>Inventory health</h2><p>Stock position across your facilities</p></div>
+              <button class="ghost-btn" data-page-link="inventory">View inventory →</button>
+            </div>
+            <div class="health-layout">
+              <div class="donut-wrap">
+                <div class="donut"><div><strong>91%</strong><span>Healthy</span></div></div>
+              </div>
+              <div class="health-list">
+                <div><span class="legend healthy"></span><div><b>Healthy stock</b><small>11,365 units</small></div><strong>91%</strong></div>
+                <div><span class="legend warning"></span><div><b>Low stock</b><small>1,088 units</small></div><strong>8.7%</strong></div>
+                <div><span class="legend critical"></span><div><b>Critical</b><small>27 units</small></div><strong>0.3%</strong></div>
+              </div>
+            </div>
+            <div class="mini-alert"><span>!</span><div><b>27 items are below reorder level</b><small>Most urgent: Insulin Glargine — 18 units remaining</small></div><button>Review</button></div>
+          </article>
+
+          <article class="panel shipments-panel">
+            <div class="panel-head">
+              <div><h2>Live shipments</h2><p>Currently moving through the network</p></div>
+              <span class="live-pill"><i></i> Live</span>
+            </div>
+            <div class="shipment">
+              <div class="shipment-line"><span class="route-dot"></span><div><b>Delhi Warehouse</b><small>Origin</small></div><span class="route-progress">78%</span></div>
+              <div class="progress"><i style="width:78%"></i></div>
+              <div class="shipment-meta"><span>🚚 MC-28491</span><b>ETA 2h 18m</b></div>
+            </div>
+            <div class="shipment">
+              <div class="shipment-line"><span class="route-dot orange"></span><div><b>Jaipur → Chandigarh</b><small>Temperature controlled</small></div><span class="route-progress">46%</span></div>
+              <div class="progress"><i style="width:46%"></i></div>
+              <div class="shipment-meta"><span>🚚 MC-28488</span><b>ETA 5h 42m</b></div>
+            </div>
+            <button class="full-ghost" data-page-link="shipments">Track all shipments</button>
+          </article>
+        </div>
+
+        <div class="bottom-grid">
+          <article class="panel">
+            <div class="panel-head">
+              <div><h2>Attention required</h2><p>Prioritized issues from the network</p></div>
+              <button class="ghost-btn" data-page-link="alerts">View all</button>
+            </div>
+            <div class="alert-list">
+              <div class="alert-row"><span class="severity critical-bg">!</span><div><b>Insulin stock projected to run out</b><small>Mohali Store · 18 hours remaining</small></div><span class="tag critical-tag">Critical</span></div>
+              <div class="alert-row"><span class="severity warning-bg">!</span><div><b>Shipment delayed by 47 minutes</b><small>MC-28491 · Delhi → Mohali</small></div><span class="tag warning-tag">Warning</span></div>
+              <div class="alert-row"><span class="severity info-bg">i</span><div><b>14 batches expire within 30 days</b><small>Across 4 facilities</small></div><span class="tag info-tag">Review</span></div>
+            </div>
+          </article>
+
+          <article class="panel demand-panel">
+            <div class="panel-head">
+              <div><h2>Demand snapshot</h2><p>Weekly medicine demand</p></div>
+              <span class="select-like">Last 7 days ⌄</span>
+            </div>
+            <div class="chart">
+              <div class="y-labels"><span>1.2k</span><span>900</span><span>600</span><span>300</span><span>0</span></div>
+              <div class="chart-area">
+                <div class="gridline"></div><div class="gridline"></div><div class="gridline"></div><div class="gridline"></div><div class="gridline"></div>
+                <svg viewBox="0 0 560 180" preserveAspectRatio="none" aria-label="Demand chart">
+                  <defs><linearGradient id="fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-opacity=".18"/><stop offset="1" stop-opacity="0"/></linearGradient></defs>
+                  <path class="area" d="M0,145 C40,132 55,110 90,118 S140,82 180,102 S230,120 270,72 S320,92 350,58 S405,84 435,48 S490,55 520,25 S545,36 560,18 L560,180 L0,180 Z"/>
+                  <path class="line" d="M0,145 C40,132 55,110 90,118 S140,82 180,102 S230,120 270,72 S320,92 350,58 S405,84 435,48 S490,55 520,25 S545,36 560,18"/>
+                </svg>
+                <div class="x-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="page-inventory" class="page">
+        <div class="page-head"><div><div class="eyebrow">OPERATIONS</div><h1>Inventory</h1><p>Track medicine stock, batches and expiry across facilities.</p></div><button class="primary-btn">＋ Add inventory</button></div>
+        <div class="stat-grid compact"><article class="stat-card"><span>Total units</span><strong>12,480</strong><small>Across 8 facilities</small></article><article class="stat-card"><span>Healthy</span><strong>11,365</strong><small class="positive">91% of stock</small></article><article class="stat-card"><span>Low stock</span><strong>27</strong><small class="negative">Needs reorder</small></article><article class="stat-card"><span>Expiring soon</span><strong>14</strong><small>Within 30 days</small></article></div>
+        <article class="panel table-panel"><div class="toolbar"><div class="search">⌕ <input placeholder="Search medicine, batch or SKU"></div><button class="filter-btn">Status ⌄</button><button class="filter-btn">Facility ⌄</button><button class="filter-btn">Expiry ⌄</button></div>
+          <table><thead><tr><th>Medicine</th><th>Batch / SKU</th><th>Quantity</th><th>Facility</th><th>Expiry</th><th>Status</th></tr></thead><tbody>
+            <tr><td><b>Insulin Glargine</b><small>Diabetes care</small></td><td>INS-24031</td><td><b>240</b> units</td><td>Delhi Warehouse</td><td>Apr 2027</td><td><span class="status healthy">Healthy</span></td></tr>
+            <tr><td><b>Amoxicillin 500mg</b><small>Antibiotic</small></td><td>AMX-8122</td><td><b>42</b> units</td><td>Mohali Store</td><td>Nov 2026</td><td><span class="status warning">Low stock</span></td></tr>
+            <tr><td><b>Paracetamol 650mg</b><small>Analgesic</small></td><td>PCM-9918</td><td><b>1,240</b> units</td><td>Chandigarh DC</td><td>Feb 2028</td><td><span class="status healthy">Healthy</span></td></tr>
+            <tr><td><b>Morphine Sulfate</b><small>Controlled medicine</small></td><td>MOR-1928</td><td><b>8</b> units</td><td>Delhi Warehouse</td><td>Sep 2026</td><td><span class="status critical">Critical</span></td></tr>
+            <tr><td><b>Azithromycin 250mg</b><small>Antibiotic</small></td><td>AZI-4421</td><td><b>186</b> units</td><td>Jaipur Hub</td><td>Dec 2026</td><td><span class="status healthy">Healthy</span></td></tr>
+          </tbody></table>
+        </article>
+      </section>
+
+      <section id="page-orders" class="page">
+        <div class="page-head"><div><div class="eyebrow">OPERATIONS</div><h1>Orders</h1><p>Manage replenishment and medicine purchase requests.</p></div><button class="primary-btn">＋ Create order</button></div>
+        <div class="stat-grid compact"><article class="stat-card"><span>Pending</span><strong>12</strong><small>Awaiting approval</small></article><article class="stat-card"><span>Processing</span><strong>8</strong><small>Being fulfilled</small></article><article class="stat-card"><span>Shipped</span><strong>24</strong><small>In transit</small></article><article class="stat-card"><span>Delivered</span><strong>183</strong><small class="positive">This month</small></article></div>
+        <article class="panel table-panel"><div class="panel-head"><div><h2>Recent orders</h2><p>Latest procurement activity</p></div><button class="ghost-btn">Export ↓</button></div><table><thead><tr><th>Order</th><th>Requested by</th><th>Items</th><th>Supplier</th><th>Date</th><th>Status</th></tr></thead><tbody>
+          <tr><td><b>#ORD-10482</b></td><td>Mohali Store</td><td>14</td><td>MedSupply India</td><td>Aug 29</td><td><span class="status warning">Pending</span></td></tr>
+          <tr><td><b>#ORD-10481</b></td><td>Chandigarh DC</td><td>28</td><td>PharmaLink</td><td>Aug 29</td><td><span class="status info">Processing</span></td></tr>
+          <tr><td><b>#ORD-10477</b></td><td>Delhi Warehouse</td><td>9</td><td>HealthRoute</td><td>Aug 28</td><td><span class="status healthy">Shipped</span></td></tr>
+        </tbody></table></article>
+      </section>
+
+      <section id="page-shipments" class="page">
+        <div class="page-head"><div><div class="eyebrow">OPERATIONS</div><h1>Shipments</h1><p>Monitor active transportation and delivery conditions.</p></div><button class="primary-btn">＋ New shipment</button></div>
+        <div class="shipment-cards"><article class="route-card"><div class="route-head"><span class="status healthy">In transit</span><b>MC-28491</b></div><h3>Delhi Warehouse <span>→</span> Mohali Store</h3><div class="route-bar"><i style="width:78%"></i></div><div class="route-info"><span>78% complete</span><b>ETA 2h 18m</b></div><div class="temp">❄ Temperature <b>4.2°C</b> <span>✓ Within range</span></div></article><article class="route-card"><div class="route-head"><span class="status warning">Delayed</span><b>MC-28488</b></div><h3>Jaipur Hub <span>→</span> Chandigarh DC</h3><div class="route-bar"><i style="width:46%"></i></div><div class="route-info"><span>46% complete</span><b>ETA 5h 42m</b></div><div class="temp">❄ Temperature <b>5.1°C</b> <span>✓ Within range</span></div></article></div>
+        <article class="panel map-placeholder"><div class="map-grid"></div><div class="map-center"><span>⌖</span><b>Live network map</b><small>Route visualization will connect to live tracking</small></div></article>
+      </section>
+
+      <section id="page-suppliers" class="page">
+        <div class="page-head"><div><div class="eyebrow">NETWORK</div><h1>Suppliers</h1><p>Manage trusted suppliers and monitor fulfillment performance.</p></div><button class="primary-btn">＋ Add supplier</button></div>
+        <div class="supplier-grid"><article class="supplier-card"><div class="supplier-logo">MS</div><div><h3>MedSupply India</h3><small>General medicines</small></div><span class="rating">98.2%</span><div class="supplier-stats"><span><b>96.7%</b><small>On-time</small></span><span><b>14</b><small>Active orders</small></span><span><b>4.8/5</b><small>Reliability</small></span></div></article><article class="supplier-card"><div class="supplier-logo">PL</div><div><h3>PharmaLink</h3><small>Specialty medicines</small></div><span class="rating">95.4%</span><div class="supplier-stats"><span><b>94.1%</b><small>On-time</small></span><span><b>8</b><small>Active orders</small></span><span><b>4.6/5</b><small>Reliability</small></span></div></article></div>
+      </section>
+
+      <section id="page-alerts" class="page">
+        <div class="page-head"><div><div class="eyebrow">RISK CENTER</div><h1>Alerts</h1><p>Prioritized disruptions, stock risks and compliance events.</p></div><button class="ghost-btn">Mark all reviewed</button></div>
+        <div class="alert-summary"><div><span class="severity critical-bg">!</span><b>3</b><small>Critical</small></div><div><span class="severity warning-bg">!</span><b>3</b><small>Warnings</small></div><div><span class="severity info-bg">i</span><b>2</b><small>For review</small></div></div>
+        <article class="panel"><div class="large-alert critical"><span class="severity critical-bg">!</span><div><b>Insulin stock projected to run out</b><p>Mohali Store is projected to reach zero stock in approximately 18 hours based on current demand.</p><small>Detected 24 min ago · Recommended action: redistribute 120 units from Chandigarh DC.</small></div><button class="primary-btn">Review action</button></div><div class="large-alert warning"><span class="severity warning-bg">!</span><div><b>Shipment MC-28491 delayed</b><p>Expected delivery has moved by 47 minutes due to route congestion.</p><small>Detected 41 min ago · Temperature remains within safe range.</small></div><button class="ghost-btn">Track shipment</button></div></article>
+      </section>
+
+      <section id="page-analytics" class="page">
+        <div class="page-head"><div><div class="eyebrow">INSIGHTS</div><h1>Analytics</h1><p>Understand demand, stock efficiency and network performance.</p></div><span class="select-like">This month ⌄</span></div>
+        <div class="analytics-grid"><article class="panel big-chart"><div class="panel-head"><div><h2>Demand vs supply</h2><p>Units across the network</p></div></div><div class="fake-bars"><i style="height:48%"></i><i style="height:61%"></i><i style="height:55%"></i><i style="height:72%"></i><i style="height:66%"></i><i style="height:84%"></i><i style="height:77%"></i><i style="height:92%"></i><i style="height:81%"></i><i style="height:96%"></i></div><div class="bar-labels"><span>W1</span><span>W2</span><span>W3</span><span>W4</span></div></article><article class="panel"><div class="panel-head"><div><h2>Network performance</h2><p>Key operating metrics</p></div></div><div class="metric"><span>Order fulfillment</span><b>96.4%</b><div><i style="width:96.4%"></i></div></div><div class="metric"><span>On-time delivery</span><b>94.8%</b><div><i style="width:94.8%"></i></div></div><div class="metric"><span>Inventory accuracy</span><b>98.7%</b><div><i style="width:98.7%"></i></div></div><div class="metric"><span>Expiry prevention</span><b>91.2%</b><div><i style="width:91.2%"></i></div></div></article></div>
+      </section>
+
+      <section id="page-settings" class="page">
+        <div class="page-head"><div><div class="eyebrow">ACCOUNT</div><h1>Settings</h1><p>Manage your profile, workspace and notifications.</p></div></div>
+        <div class="settings-layout"><div class="settings-nav"><button class="selected">Profile</button><button>Notifications</button><button>Workspace</button><button>Security</button></div><article class="panel settings-content"><h2>Profile</h2><p>Personal details shown across the MediChain workspace.</p><label>Full name<input value="Rahul Sharma"></label><label>Role<input value="Pharmacist" disabled></label><label>Email<input value="rahul@medichain.example"></label><div class="setting-actions"><button class="primary-btn">Save changes</button></div></article></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal hidden" id="quickModal"><div class="modal-card"><button class="modal-close">×</button><div class="eyebrow">QUICK ACTION</div><h2>What do you want to do?</h2><button class="action-choice"><span>＋</span><div><b>Add inventory</b><small>Record new medicine stock</small></div></button><button class="action-choice"><span>↗</span><div><b>Create shipment</b><small>Start a new delivery</small></div></button><button class="action-choice"><span>!</span><div><b>Review alerts</b><small>See critical network issues</small></div></button></div></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
