@@ -72,97 +72,57 @@
           <button class="primary-btn" id="quickAction">＋ Quick action</button>
         </div>
 
-        <div class="stat-grid">
-          <article class="stat-card">
-            <div class="stat-top"><span>Inventory units</span><span class="stat-icon blue">▣</span></div>
-            <strong>12,480</strong>
-            <div class="stat-foot positive">↑ 4.8% <span>vs last week</span></div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-top"><span>Active orders</span><span class="stat-icon violet">▤</span></div>
-            <strong>342</strong>
-            <div class="stat-foot positive">↑ 12 <span>since yesterday</span></div>
-          </article>
-          <article class="stat-card">
-            <div class="stat-top"><span>In transit</span><span class="stat-icon teal">↗</span></div>
-            <strong>27</strong>
-            <div class="stat-foot neutral">8 arriving today</div>
-          </article>
-          <article class="stat-card alert-card">
-            <div class="stat-top"><span>Needs attention</span><span class="stat-icon red">!</span></div>
-            <strong>8</strong>
-            <div class="stat-foot negative">3 critical <span>requires action</span></div>
-          </article>
+        <div class="control-hero">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="pulse-ring"></span> NETWORK CONTROL CENTER</div>
+            <h2>Supply network is <span>stable</span></h2>
+            <p>8 facilities online · 27 shipments moving · 3 risks need action</p>
+            <div class="hero-actions">
+              <button class="primary-btn" data-page-link="alerts">Review critical risks</button>
+              <button class="hero-ghost" data-page-link="shipments">Open live tracking →</button>
+            </div>
+          </div>
+          <div class="network-score">
+            <div class="score-ring"><div><strong>94</strong><small>/100</small></div></div>
+            <span>Resilience score</span><small>↑ 3.2 pts this week</small>
+          </div>
+          <div class="hero-route">
+            <div class="route-caption"><span>NETWORK FLOW</span><b>Today</b></div>
+            <div class="flow-line"><span class="flow-node active"></span><i></i><span class="flow-node active"></span><i></i><span class="flow-node warning"></span><i></i><span class="flow-node"></span></div>
+            <div class="flow-labels"><span>Suppliers</span><span>Warehouses</span><span>Transit</span><span>Pharmacies</span></div>
+          </div>
         </div>
 
-        <div class="dashboard-grid">
-          <article class="panel inventory-health">
-            <div class="panel-head">
-              <div><h2>Inventory health</h2><p>Stock position across your facilities</p></div>
-              <button class="ghost-btn" data-page-link="inventory">View inventory →</button>
-            </div>
-            <div class="health-layout">
-              <div class="donut-wrap">
-                <div class="donut"><div><strong>91%</strong><span>Healthy</span></div></div>
-              </div>
-              <div class="health-list">
-                <div><span class="legend healthy"></span><div><b>Healthy stock</b><small>11,365 units</small></div><strong>91%</strong></div>
-                <div><span class="legend warning"></span><div><b>Low stock</b><small>1,088 units</small></div><strong>8.7%</strong></div>
-                <div><span class="legend critical"></span><div><b>Critical</b><small>27 units</small></div><strong>0.3%</strong></div>
-              </div>
-            </div>
-            <div class="mini-alert"><span>!</span><div><b>27 items are below reorder level</b><small>Most urgent: Insulin Glargine — 18 units remaining</small></div><button>Review</button></div>
+        <div class="stat-grid">
+          <article class="stat-card"><div class="stat-top"><span>Inventory units</span><span class="stat-icon blue">▣</span></div><strong>12,480</strong><div class="stat-foot positive">↑ 4.8% <span>vs last week</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Orders in pipeline</span><span class="stat-icon violet">▤</span></div><strong>342</strong><div class="stat-foot positive">↑ 12 <span>since yesterday</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>Active shipments</span><span class="stat-icon teal">↗</span></div><strong>27</strong><div class="stat-foot neutral">8 arriving today</div></article>
+          <article class="stat-card alert-card"><div class="stat-top"><span>At-risk items</span><span class="stat-icon red">!</span></div><strong>8</strong><div class="stat-foot negative">3 critical <span>requires action</span></div></article>
+        </div>
+
+        <div class="mission-grid">
+          <article class="panel risk-panel">
+            <div class="panel-head"><div><div class="eyebrow">ACTION QUEUE</div><h2>What needs attention</h2><p>Prioritized by operational impact</p></div><button class="ghost-btn" data-page-link="alerts">View all →</button></div>
+            <div class="risk-main"><span class="severity critical-bg">!</span><div><span class="risk-label">CRITICAL · 18 HOURS</span><h3>Insulin Glargine shortage predicted</h3><p>Mohali Store will reach zero stock based on current demand.</p><div class="risk-recommendation"><b>Recommended response</b><span>Transfer <strong>120 units</strong> from Chandigarh DC</span></div></div></div>
+            <button class="risk-button" data-page-link="inventory">Review transfer plan <span>→</span></button>
+            <div class="risk-secondary"><div><span class="severity warning-bg">!</span><div><b>Shipment MC-28491 delayed</b><small>47 min · Temperature normal</small></div></div><div><span class="severity info-bg">i</span><div><b>14 batches nearing expiry</b><small>4 facilities · within 30 days</small></div></div></div>
           </article>
 
-          <article class="panel shipments-panel">
-            <div class="panel-head">
-              <div><h2>Live shipments</h2><p>Currently moving through the network</p></div>
-              <span class="live-pill"><i></i> Live</span>
-            </div>
-            <div class="shipment">
-              <div class="shipment-line"><span class="route-dot"></span><div><b>Delhi Warehouse</b><small>Origin</small></div><span class="route-progress">78%</span></div>
-              <div class="progress"><i style="width:78%"></i></div>
-              <div class="shipment-meta"><span>🚚 MC-28491</span><b>ETA 2h 18m</b></div>
-            </div>
-            <div class="shipment">
-              <div class="shipment-line"><span class="route-dot orange"></span><div><b>Jaipur → Chandigarh</b><small>Temperature controlled</small></div><span class="route-progress">46%</span></div>
-              <div class="progress"><i style="width:46%"></i></div>
-              <div class="shipment-meta"><span>🚚 MC-28488</span><b>ETA 5h 42m</b></div>
-            </div>
-            <button class="full-ghost" data-page-link="shipments">Track all shipments</button>
+          <article class="panel inventory-health">
+            <div class="panel-head"><div><div class="eyebrow">STOCK POSITION</div><h2>Inventory health</h2><p>Across 8 facilities</p></div><button class="ghost-btn" data-page-link="inventory">Open →</button></div>
+            <div class="health-layout"><div class="donut-wrap"><div class="donut"><div><strong>91%</strong><span>Healthy</span></div></div></div><div class="health-list"><div><span class="legend healthy"></span><div><b>Healthy stock</b><small>11,365 units</small></div><strong>91%</strong></div><div><span class="legend warning"></span><div><b>Low stock</b><small>1,088 units</small></div><strong>8.7%</strong></div><div><span class="legend critical"></span><div><b>Critical</b><small>27 units</small></div><strong>0.3%</strong></div></div></div>
+            <div class="facility-row"><span>Facility distribution</span><div class="facility-bars"><i style="width:82%"></i><i style="width:66%"></i><i style="width:49%"></i><i style="width:34%"></i></div></div>
           </article>
         </div>
 
         <div class="bottom-grid">
-          <article class="panel">
-            <div class="panel-head">
-              <div><h2>Attention required</h2><p>Prioritized issues from the network</p></div>
-              <button class="ghost-btn" data-page-link="alerts">View all</button>
-            </div>
-            <div class="alert-list">
-              <div class="alert-row"><span class="severity critical-bg">!</span><div><b>Insulin stock projected to run out</b><small>Mohali Store · 18 hours remaining</small></div><span class="tag critical-tag">Critical</span></div>
-              <div class="alert-row"><span class="severity warning-bg">!</span><div><b>Shipment delayed by 47 minutes</b><small>MC-28491 · Delhi → Mohali</small></div><span class="tag warning-tag">Warning</span></div>
-              <div class="alert-row"><span class="severity info-bg">i</span><div><b>14 batches expire within 30 days</b><small>Across 4 facilities</small></div><span class="tag info-tag">Review</span></div>
-            </div>
+          <article class="panel shipments-panel"><div class="panel-head"><div><div class="eyebrow">TRANSPORT</div><h2>Live shipments</h2><p>Currently moving through the network</p></div><span class="live-pill"><i></i> Live</span></div>
+            <div class="shipment"><div class="shipment-line"><span class="route-dot"></span><div><b>Delhi Warehouse → Mohali Store</b><small>MC-28491 · Temperature controlled</small></div><span class="route-progress">78%</span></div><div class="progress"><i style="width:78%"></i></div><div class="shipment-meta"><span>❄ 4.2°C · Normal</span><b>ETA 2h 18m</b></div></div>
+            <div class="shipment"><div class="shipment-line"><span class="route-dot orange"></span><div><b>Jaipur Hub → Chandigarh DC</b><small>MC-28488 · Temperature controlled</small></div><span class="route-progress">46%</span></div><div class="progress"><i style="width:46%"></i></div><div class="shipment-meta"><span>❄ 5.1°C · Normal</span><b>ETA 5h 42m</b></div></div>
+            <button class="full-ghost" data-page-link="shipments">Open network tracking</button>
           </article>
-
-          <article class="panel demand-panel">
-            <div class="panel-head">
-              <div><h2>Demand snapshot</h2><p>Weekly medicine demand</p></div>
-              <span class="select-like">Last 7 days ⌄</span>
-            </div>
-            <div class="chart">
-              <div class="y-labels"><span>1.2k</span><span>900</span><span>600</span><span>300</span><span>0</span></div>
-              <div class="chart-area">
-                <div class="gridline"></div><div class="gridline"></div><div class="gridline"></div><div class="gridline"></div><div class="gridline"></div>
-                <svg viewBox="0 0 560 180" preserveAspectRatio="none" aria-label="Demand chart">
-                  <defs><linearGradient id="fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-opacity=".18"/><stop offset="1" stop-opacity="0"/></linearGradient></defs>
-                  <path class="area" d="M0,145 C40,132 55,110 90,118 S140,82 180,102 S230,120 270,72 S320,92 350,58 S405,84 435,48 S490,55 520,25 S545,36 560,18 L560,180 L0,180 Z"/>
-                  <path class="line" d="M0,145 C40,132 55,110 90,118 S140,82 180,102 S230,120 270,72 S320,92 350,58 S405,84 435,48 S490,55 520,25 S545,36 560,18"/>
-                </svg>
-                <div class="x-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
-              </div>
-            </div>
+          <article class="panel demand-panel"><div class="panel-head"><div><div class="eyebrow">FORECAST</div><h2>Demand trend</h2><p>Medicine demand · last 7 days</p></div><span class="select-like">Last 7 days ⌄</span></div>
+            <div class="chart"><div class="y-labels"><span>1.2k</span><span>900</span><span>600</span><span>300</span><span>0</span></div><div class="chart-area"><div class="gridline"></div><div class="gridline"></div><div class="gridline"></div><div class="gridline"></div><div class="gridline"></div><svg viewBox="0 0 560 180" preserveAspectRatio="none"><defs><linearGradient id="fill2" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-opacity=".18"/><stop offset="1" stop-opacity="0"/></linearGradient></defs><path class="area" d="M0,145 C40,132 55,110 90,118 S140,82 180,102 S230,120 270,72 S320,92 350,58 S405,84 435,48 S490,55 520,25 S545,36 560,18 L560,180 L0,180 Z"/><path class="line" d="M0,145 C40,132 55,110 90,118 S140,82 180,102 S230,120 270,72 S320,92 350,58 S405,84 435,48 S490,55 520,25 S545,36 560,18"/></svg><div class="x-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></div></div>
           </article>
         </div>
       </section>
