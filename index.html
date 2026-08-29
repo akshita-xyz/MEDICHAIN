@@ -128,16 +128,61 @@
       </section>
 
       <section id="page-inventory" class="page">
-        <div class="page-head"><div><div class="eyebrow">OPERATIONS</div><h1>Inventory</h1><p>Track medicine stock, batches and expiry across facilities.</p></div><button class="primary-btn">＋ Add inventory</button></div>
-        <div class="stat-grid compact"><article class="stat-card"><span>Total units</span><strong>12,480</strong><small>Across 8 facilities</small></article><article class="stat-card"><span>Healthy</span><strong>11,365</strong><small class="positive">91% of stock</small></article><article class="stat-card"><span>Low stock</span><strong>27</strong><small class="negative">Needs reorder</small></article><article class="stat-card"><span>Expiring soon</span><strong>14</strong><small>Within 30 days</small></article></div>
-        <article class="panel table-panel"><div class="toolbar"><div class="search">⌕ <input placeholder="Search medicine, batch or SKU"></div><button class="filter-btn">Status ⌄</button><button class="filter-btn">Facility ⌄</button><button class="filter-btn">Expiry ⌄</button></div>
-          <table><thead><tr><th>Medicine</th><th>Batch / SKU</th><th>Quantity</th><th>Facility</th><th>Expiry</th><th>Status</th></tr></thead><tbody>
-            <tr><td><b>Insulin Glargine</b><small>Diabetes care</small></td><td>INS-24031</td><td><b>240</b> units</td><td>Delhi Warehouse</td><td>Apr 2027</td><td><span class="status healthy">Healthy</span></td></tr>
-            <tr><td><b>Amoxicillin 500mg</b><small>Antibiotic</small></td><td>AMX-8122</td><td><b>42</b> units</td><td>Mohali Store</td><td>Nov 2026</td><td><span class="status warning">Low stock</span></td></tr>
-            <tr><td><b>Paracetamol 650mg</b><small>Analgesic</small></td><td>PCM-9918</td><td><b>1,240</b> units</td><td>Chandigarh DC</td><td>Feb 2028</td><td><span class="status healthy">Healthy</span></td></tr>
-            <tr><td><b>Morphine Sulfate</b><small>Controlled medicine</small></td><td>MOR-1928</td><td><b>8</b> units</td><td>Delhi Warehouse</td><td>Sep 2026</td><td><span class="status critical">Critical</span></td></tr>
-            <tr><td><b>Azithromycin 250mg</b><small>Antibiotic</small></td><td>AZI-4421</td><td><b>186</b> units</td><td>Jaipur Hub</td><td>Dec 2026</td><td><span class="status healthy">Healthy</span></td></tr>
+        <div class="page-head">
+          <div><div class="eyebrow">OPERATIONS</div><h1>Inventory</h1><p>Track medicine stock, batches and expiry across facilities.</p></div>
+          <button class="primary-btn" id="addInventoryBtn">＋ Add inventory</button>
+        </div>
+
+        <div class="stat-grid compact">
+          <article class="stat-card"><span>Total units</span><strong>12,480</strong><small>Across 8 facilities</small></article>
+          <article class="stat-card"><span>Healthy</span><strong>11,365</strong><small class="positive">91% of stock</small></article>
+          <article class="stat-card"><span>Low stock</span><strong>1,088</strong><small class="negative">8.7% of stock</small></article>
+          <article class="stat-card"><span>Expiring soon</span><strong>14</strong><small>Within 30 days</small></article>
+        </div>
+
+        <article class="panel inventory-control-panel">
+          <div class="inventory-toolbar">
+            <div class="search inventory-search">⌕ <input id="inventorySearch" placeholder="Search medicine, batch or SKU"></div>
+            <select class="filter-select" id="inventoryStatus">
+              <option value="all">All status</option><option value="healthy">Healthy</option><option value="warning">Low stock</option><option value="critical">Critical</option>
+            </select>
+            <select class="filter-select" id="inventoryFacility">
+              <option value="all">All facilities</option><option>Delhi Warehouse</option><option>Mohali Store</option><option>Chandigarh DC</option><option>Jaipur Hub</option>
+            </select>
+            <select class="filter-select" id="inventoryExpiry">
+              <option value="all">All expiry</option><option value="soon">Within 30 days</option><option value="normal">Normal</option>
+            </select>
+          </div>
+          <div class="inventory-toolbar-foot">
+            <span id="inventoryResultCount">5 medicines shown</span>
+            <div class="inventory-legend"><span><i class="legend healthy"></i>Healthy</span><span><i class="legend warning"></i>Low stock</span><span><i class="legend critical"></i>Critical</span></div>
+          </div>
+        </article>
+
+        <article class="panel table-panel inventory-table-panel">
+          <div class="panel-head">
+            <div><h2>Medicine stock</h2><p>Select a row to inspect batch details and stock movement.</p></div>
+            <button class="ghost-btn" id="inventoryExport">Export ↓</button>
+          </div>
+          <div class="table-scroll">
+          <table id="inventoryTable"><thead><tr><th>Medicine</th><th>Batch / SKU</th><th>Quantity</th><th>Facility</th><th>Expiry</th><th>Status</th><th></th></tr></thead><tbody>
+            <tr class="inventory-row" data-medicine="Insulin Glargine" data-category="Diabetes care" data-batch="INS-24031" data-quantity="240" data-facility="Delhi Warehouse" data-expiry="Apr 2027" data-status="healthy" data-qr="MC-INS-24031">
+              <td><b>Insulin Glargine</b><small>Diabetes care</small></td><td>INS-24031</td><td><b>240</b> units</td><td>Delhi Warehouse</td><td>Apr 2027</td><td><span class="status healthy">Healthy</span></td><td><span class="row-arrow">→</span></td>
+            </tr>
+            <tr class="inventory-row" data-medicine="Amoxicillin 500mg" data-category="Antibiotic" data-batch="AMX-8122" data-quantity="42" data-facility="Mohali Store" data-expiry="Nov 2026" data-status="warning" data-qr="MC-AMX-8122">
+              <td><b>Amoxicillin 500mg</b><small>Antibiotic</small></td><td>AMX-8122</td><td><b>42</b> units</td><td>Mohali Store</td><td>Nov 2026</td><td><span class="status warning">Low stock</span></td><td><span class="row-arrow">→</span></td>
+            </tr>
+            <tr class="inventory-row" data-medicine="Paracetamol 650mg" data-category="Analgesic" data-batch="PCM-9918" data-quantity="1240" data-facility="Chandigarh DC" data-expiry="Feb 2028" data-status="healthy" data-qr="MC-PCM-9918">
+              <td><b>Paracetamol 650mg</b><small>Analgesic</small></td><td>PCM-9918</td><td><b>1,240</b> units</td><td>Chandigarh DC</td><td>Feb 2028</td><td><span class="status healthy">Healthy</span></td><td><span class="row-arrow">→</span></td>
+            </tr>
+            <tr class="inventory-row" data-medicine="Morphine Sulfate" data-category="Controlled medicine" data-batch="MOR-1928" data-quantity="8" data-facility="Delhi Warehouse" data-expiry="Sep 2026" data-status="critical" data-qr="MC-MOR-1928">
+              <td><b>Morphine Sulfate</b><small>Controlled medicine</small></td><td>MOR-1928</td><td><b>8</b> units</td><td>Delhi Warehouse</td><td>Sep 2026</td><td><span class="status critical">Critical</span></td><td><span class="row-arrow">→</span></td>
+            </tr>
+            <tr class="inventory-row" data-medicine="Azithromycin 250mg" data-category="Antibiotic" data-batch="AZI-4421" data-quantity="186" data-facility="Jaipur Hub" data-expiry="Dec 2026" data-status="healthy" data-qr="MC-AZI-4421">
+              <td><b>Azithromycin 250mg</b><small>Antibiotic</small></td><td>AZI-4421</td><td><b>186</b> units</td><td>Jaipur Hub</td><td>Dec 2026</td><td><span class="status healthy">Healthy</span></td><td><span class="row-arrow">→</span></td>
+            </tr>
           </tbody></table>
+          </div>
         </article>
       </section>
 
@@ -178,6 +223,47 @@
         <div class="settings-layout"><div class="settings-nav"><button class="selected">Profile</button><button>Notifications</button><button>Workspace</button><button>Security</button></div><article class="panel settings-content"><h2>Profile</h2><p>Personal details shown across the MediChain workspace.</p><label>Full name<input value="Rahul Sharma"></label><label>Role<input value="Pharmacist" disabled></label><label>Email<input value="rahul@medichain.example"></label><div class="setting-actions"><button class="primary-btn">Save changes</button></div></article></div>
       </section>
     </main>
+  </div>
+
+
+  <div class="drawer-backdrop hidden" id="inventoryDrawerBackdrop"></div>
+  <aside class="inventory-drawer" id="inventoryDrawer" aria-hidden="true">
+    <div class="drawer-head">
+      <div><div class="eyebrow">BATCH DETAILS</div><h2 id="drawerMedicine">Medicine</h2><p id="drawerCategory">Category</p></div>
+      <button class="modal-close drawer-close" id="drawerClose">×</button>
+    </div>
+    <div class="drawer-status" id="drawerStatus"></div>
+    <div class="drawer-grid">
+      <div><span>Batch / SKU</span><b id="drawerBatch">—</b></div>
+      <div><span>Available</span><b id="drawerQuantity">—</b></div>
+      <div><span>Facility</span><b id="drawerFacility">—</b></div>
+      <div><span>Expiry</span><b id="drawerExpiry">—</b></div>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title"><b>Stock movement</b><span>Last 7 days</span></div>
+      <div class="movement"><span class="movement-dot in"></span><div><b>Received from supplier</b><small>Aug 27 · +80 units</small></div><strong>+80</strong></div>
+      <div class="movement"><span class="movement-dot out"></span><div><b>Issued to pharmacy</b><small>Aug 28 · -24 units</small></div><strong>-24</strong></div>
+      <div class="movement"><span class="movement-dot out"></span><div><b>Order fulfillment</b><small>Aug 29 · -16 units</small></div><strong>-16</strong></div>
+    </div>
+    <div class="qr-card"><div class="fake-qr" id="drawerQr">▦</div><div><b>Traceable inventory ID</b><small id="drawerQrText">MC-—</small><button class="text-btn" id="generateQrBtn">Generate QR</button></div></div>
+    <div class="drawer-actions"><button class="ghost-btn" id="drawerTransferBtn">↗ Transfer stock</button><button class="primary-btn" id="drawerCloseAction">Done</button></div>
+  </aside>
+
+  <div class="modal hidden" id="transferModal">
+    <div class="modal-card transfer-card">
+      <button class="modal-close" id="transferClose">×</button>
+      <div class="eyebrow">STOCK REDISTRIBUTION</div>
+      <h2>Transfer stock</h2>
+      <p class="modal-subtitle" id="transferMedicine">Select a medicine from inventory.</p>
+      <label class="form-label">Destination facility
+        <select id="transferDestination"><option>Mohali Store</option><option>Chandigarh DC</option><option>Delhi Warehouse</option><option>Jaipur Hub</option></select>
+      </label>
+      <label class="form-label">Units to transfer
+        <input id="transferUnits" type="number" min="1" value="20">
+      </label>
+      <div class="transfer-note">The transfer will be added to the operational action queue for approval.</div>
+      <div class="modal-actions"><button class="ghost-btn" id="transferCancel">Cancel</button><button class="primary-btn" id="confirmTransfer">Create transfer plan</button></div>
+    </div>
   </div>
 
   <div class="modal hidden" id="quickModal"><div class="modal-card"><button class="modal-close">×</button><div class="eyebrow">QUICK ACTION</div><h2>What do you want to do?</h2><button class="action-choice"><span>＋</span><div><b>Add inventory</b><small>Record new medicine stock</small></div></button><button class="action-choice"><span>↗</span><div><b>Create shipment</b><small>Start a new delivery</small></div></button><button class="action-choice"><span>!</span><div><b>Review alerts</b><small>See critical network issues</small></div></button></div></div>
