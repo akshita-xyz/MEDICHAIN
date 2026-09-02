@@ -4,6 +4,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const drugRoutes = require("./routes/drugRoutes");
+const stockMovementRoutes = require("./routes/stockMovementRoutes");
 require("dotenv").config();
 
 const app = express();
@@ -13,6 +14,7 @@ const PORT = process.env.PORT || 5001;
 // Middleware
 app.use(express.json());
 app.use("/api/drugs", drugRoutes);
+app.use("/api/movements", stockMovementRoutes);
 
 // Test route
 app.get("/", (req, res) => {
