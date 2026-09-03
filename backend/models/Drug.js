@@ -27,6 +27,12 @@ const drugSchema = new mongoose.Schema(
       min: 0,
     },
 
+    reorderLevel: {
+  type: Number,
+  default: 10,
+  min: 0
+},
+
     expiryDate: {
       type: Date,
       required: true,
@@ -40,7 +46,7 @@ const drugSchema = new mongoose.Schema(
 
     status: {
       type: String,
-      enum: ["Available", "Low Stock", "Expired"],
+      enum: ["Available", "Low Stock", "Out of Stock", "Expired"],
       default: "Available",
     },
   },

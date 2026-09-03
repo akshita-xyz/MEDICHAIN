@@ -1,35 +1,100 @@
 const express = require("express");
 const Drug = require("../models/Drug");
+const { protect, authorize } = require("../middleware/authMiddleware");
+const getDrugStatus = require("../utils/drugStatus");
 
 const router = express.Router();
 
-// GET all drugs
-router.get("/", async (req, res) => {
+// GET all drugs with search, filtering and pagination
+router.get("/", protect, async (req, res) => {
   try {
-    const drugs = await Drug.find();
-    res.json(drugs);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch drugs" });
-  }
-});
+    const {
+      name,
+      status,
+      location,
+      batchNumber,
+      page = 1,
+      limit = 10
+    } = req.query;
 
-// POST a new drug
-router.post("/", async (req, res) => {
-  try {
-    const newDrug = new Drug(req.body);
-    const savedDrug = await newDrug.save();
+    const filter = {};
 
-    res.status(201).json(savedDrug);
+    // Search by drug name
+    if (name) {
+      filter.name = { $regex: name, $options: "i" };
+    }
+
+    // Filter by status
+    if (status) {
+      filter.status = status;
+    }
+
+    // Filter by location
+    if (location) {
+      filter.location = { $regex: location, $options: "i" };
+    }
+
+    // Search by batch number
+    if (batchNumber) {
+      filter.batchNumber = { $regex: batchNumber, $options: "i" };
+    }
+
+    // Pagination
+    const pageNumber = Math.max(parseInt(page), 1);
+    const limitNumber = Math.min(Math.max(parseInt(limit), 1), 100);
+    const skip = (pageNumber - 1) * limitNumber;
+
+    const totalDrugs = await Drug.countDocuments(filter);
+
+    const drugs = await Drug.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limitNumber);
+
+    const totalPages = Math.ceil(totalDrugs / limitNumber);
+
+    res.json({
+      drugs,
+      pagination: {
+        currentPage: pageNumber,
+        limit: limitNumber,
+        totalDrugs,
+        totalPages
+      }
+    });
+
   } catch (error) {
-    res.status(400).json({
-      message: "Failed to add drug",
-      error: error.message,
+    res.status(500).json({
+      message: "Failed to fetch drugs",
+      error: error.message
     });
   }
 });
 
+// POST a new drug
+router.post("/",protect, authorize("Admin", "Supplier", "Pharmacy"),  async (req, res) => {
+  try {
+    const newDrug = new Drug(req.body);
+    newDrug.status = getDrugStatus(
+  newDrug.quantity,
+  newDrug.expiryDate,
+  newDrug.reorderLevel
+);
+    const savedDrug = await newDrug.save();
+
+    res.status(201).json(savedDrug);
+  } catch (error) {
+  console.error("ADD DRUG ERROR:", error);
+
+  res.status(400).json({
+    message: "Failed to add drug",
+    error: error.message
+  });
+}
+});
+
 // GET a single drug by ID
-router.get("/:id", async (req, res) => {
+router.get("/:id",protect, async (req, res) => {
   try {
     const drug = await Drug.findById(req.params.id);
 
@@ -49,21 +114,30 @@ router.get("/:id", async (req, res) => {
 });
 
 // UPDATE a drug
-router.put("/:id", async (req, res) => {
+router.put("/:id", protect, authorize("Admin", "Supplier"), async (req, res) => {
   try {
-    const updatedDrug = await Drug.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const drug = await Drug.findById(req.params.id);
 
-    if (!updatedDrug) {
+    if (!drug) {
       return res.status(404).json({
         message: "Drug not found"
       });
     }
 
+    // Update the drug with the new values
+    Object.assign(drug, req.body);
+
+    // Automatically calculate the correct status
+    drug.status = getDrugStatus(
+      drug.quantity,
+      drug.expiryDate,
+      drug.reorderLevel
+    );
+
+    const updatedDrug = await drug.save();
+
     res.json(updatedDrug);
+
   } catch (error) {
     res.status(400).json({
       message: "Failed to update drug",
@@ -73,7 +147,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // DELETE a drug
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", protect, authorize("Admin"), async (req, res) => {
   try {
     const deletedDrug = await Drug.findByIdAndDelete(req.params.id);
 
