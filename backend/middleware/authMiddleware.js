@@ -6,7 +6,7 @@ const protect = (req, res, next) => {
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({
-        message: "Authentication required"
+        message: "Authentication required",
       });
     }
 
@@ -14,16 +14,15 @@ const protect = (req, res, next) => {
 
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET 
+      process.env.JWT_SECRET
     );
 
     req.user = decoded;
 
     next();
-
   } catch (error) {
     return res.status(401).json({
-      message: "Invalid or expired token"
+      message: "Invalid or expired token",
     });
   }
 };
@@ -32,7 +31,7 @@ const authorize = (...allowedRoles) => {
   return (req, res, next) => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
       return res.status(403).json({
-        message: "Access denied"
+        message: "Access denied",
       });
     }
 
@@ -42,5 +41,5 @@ const authorize = (...allowedRoles) => {
 
 module.exports = {
   protect,
-  authorize
+  authorize,
 };
