@@ -1,8 +1,9 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const StockMovement = require("../models/StockMovement");
 const Drug = require("../models/Drug");
-const { protect, authorize } = require("../middleware/authMiddleware");
 const Warehouse = require("../models/Warehouse");
+const { protect, authorize } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -25,6 +26,12 @@ router.get("/", protect, async (req, res) => {
 // GET a single stock movement
 router.get("/:id", protect, async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        message: "Invalid stock movement ID"
+      });
+    }
+
     const movement = await StockMovement.findById(req.params.id)
       .populate("drug");
 
@@ -60,21 +67,37 @@ router.post(
         notes
       } = req.body;
 
-      // Validate quantity
-      if (!quantity || quantity <= 0) {
+      // Validate drug ID
+      if (!mongoose.Types.ObjectId.isValid(drug)) {
         return res.status(400).json({
-          message: "Quantity must be greater than 0"
+          message: "Invalid drug ID"
         });
       }
 
-      // Make sure source and destination are different
+      // Validate quantity
+      if (
+        !Number.isInteger(quantity) ||
+        quantity <= 0
+      ) {
+        return res.status(400).json({
+          message: "Quantity must be a positive whole number"
+        });
+      }
+
+      // Validate locations
+      if (!fromLocation || !toLocation) {
+        return res.status(400).json({
+          message: "Source and destination locations are required"
+        });
+      }
+
       if (fromLocation === toLocation) {
         return res.status(400).json({
           message: "Source and destination locations must be different"
         });
       }
 
-      // Check that the drug exists
+      // Check drug
       const existingDrug = await Drug.findById(drug);
 
       if (!existingDrug) {
@@ -83,21 +106,31 @@ router.post(
         });
       }
 
-      // Make sure the drug is currently at the source location
+      // Verify batch number
+      if (
+        batchNumber &&
+        existingDrug.batchNumber !== batchNumber
+      ) {
+        return res.status(400).json({
+          message: "Batch number does not match the selected drug"
+        });
+      }
+
+      // Verify source location
       if (existingDrug.location !== fromLocation) {
         return res.status(400).json({
           message: `Drug is currently at ${existingDrug.location}, not ${fromLocation}`
         });
       }
 
-      // Check available quantity
+      // Check stock
       if (quantity > existingDrug.quantity) {
         return res.status(400).json({
           message: "Insufficient stock available"
         });
       }
 
-      // Make sure source warehouse exists
+      // Check source warehouse
       const sourceWarehouse = await Warehouse.findOne({
         name: fromLocation
       });
@@ -108,7 +141,7 @@ router.post(
         });
       }
 
-      // Make sure destination warehouse exists
+      // Check destination warehouse
       const destinationWarehouse = await Warehouse.findOne({
         name: toLocation
       });
@@ -119,7 +152,7 @@ router.post(
         });
       }
 
-      // Check destination capacity
+      // Check capacity
       if (
         destinationWarehouse.currentStock + quantity >
         destinationWarehouse.capacity
@@ -131,7 +164,7 @@ router.post(
 
       const newMovement = new StockMovement({
         drug,
-        batchNumber,
+        batchNumber: batchNumber || existingDrug.batchNumber,
         fromLocation,
         toLocation,
         quantity,
@@ -163,6 +196,13 @@ router.put(
   authorize("Admin", "Distributor", "Pharmacy"),
   async (req, res) => {
     try {
+      // Validate movement ID
+      if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        return res.status(400).json({
+          message: "Invalid stock movement ID"
+        });
+      }
+
       const { status } = req.body;
 
       const allowedStatuses = [
@@ -186,7 +226,7 @@ router.put(
         });
       }
 
-      // Prevent changes after delivery or cancellation
+      // Prevent changes after final state
       if (
         movement.status === "Delivered" ||
         movement.status === "Cancelled"
@@ -196,14 +236,17 @@ router.put(
         });
       }
 
-      // Valid status flow
-      if (movement.status === "Pending" && status === "Delivered") {
+      // Prevent skipping In Transit
+      if (
+        movement.status === "Pending" &&
+        status === "Delivered"
+      ) {
         return res.status(400).json({
           message: "Movement must be In Transit before Delivered"
         });
       }
 
-      // If movement is being delivered, update inventory
+      // Delivery updates inventory
       if (status === "Delivered") {
         const drug = await Drug.findById(movement.drug);
 
@@ -213,14 +256,14 @@ router.put(
           });
         }
 
-        // Make sure the drug is still at the source location
+        // Verify source location
         if (drug.location !== movement.fromLocation) {
           return res.status(400).json({
             message: `Drug is no longer at ${movement.fromLocation}`
           });
         }
 
-        // Make sure enough stock is available
+        // Verify stock
         if (movement.quantity > drug.quantity) {
           return res.status(400).json({
             message: "Insufficient stock available"
@@ -248,7 +291,7 @@ router.put(
           });
         }
 
-        // Check destination capacity
+        // Verify destination capacity
         if (
           toWarehouse.currentStock + movement.quantity >
           toWarehouse.capacity
@@ -262,7 +305,6 @@ router.put(
         // PARTIAL TRANSFER
         // -----------------------------------------
         if (movement.quantity < drug.quantity) {
-          // Reduce quantity at source
           drug.quantity -= movement.quantity;
 
           drug.status =
@@ -274,27 +316,16 @@ router.put(
 
           await drug.save();
 
-          // Create a new inventory record at destination
-          const transferredDrug = new Drug({
-            name: drug.name,
-            genericName: drug.genericName,
-            manufacturer: drug.manufacturer,
-            batchNumber: movement.batchNumber,
-            dosageForm: drug.dosageForm,
-            strength: drug.strength,
-            storageConditions: drug.storageConditions,
-            quantity: movement.quantity,
-            reorderLevel: drug.reorderLevel,
-            expiryDate: drug.expiryDate,
-            location: movement.toLocation,
-            status:
-              movement.quantity <= drug.reorderLevel
-                ? "Low Stock"
-                : "Available"
-          });
-
-          await transferredDrug.save();
-
+          /*
+           * IMPORTANT:
+           * Drug.batchNumber is unique.
+           * Therefore we cannot create another Drug
+           * document with the same batch number.
+           *
+           * For now, keep the transferred quantity represented
+           * by the movement record. The destination inventory
+           * will be handled as part of the final inventory model.
+           */
         } else {
           // -----------------------------------------
           // FULL TRANSFER
