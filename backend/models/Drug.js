@@ -11,7 +11,7 @@ const drugSchema = new mongoose.Schema(
     batchNumber: {
       type: String,
       required: true,
-      unique: true,
+      
       trim: true,
     },
 
@@ -87,6 +87,11 @@ storageConditions: {
   {
     timestamps: true,
   }
+);
+
+drugSchema.index(
+  { batchNumber: 1, location: 1 },
+  { unique: true }
 );
 
 module.exports = mongoose.model("Drug", drugSchema);

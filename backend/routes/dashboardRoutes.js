@@ -1,91 +1,87 @@
 const express = require("express");
-const Drug = require("../models/Drug");
-const StockMovement = require("../models/StockMovement");
 const { protect } = require("../middleware/authMiddleware");
+
+const Drug = require("../models/Drug");
+const Warehouse = require("../models/Warehouse");
+const StockMovement = require("../models/StockMovement");
 
 const router = express.Router();
 
-// GET drugs expiring soon
-router.get("/expiring-soon", protect, async (req, res) => {
-  try {
-    const today = new Date();
-
-    const thirtyDaysFromNow = new Date();
-    thirtyDaysFromNow.setDate(today.getDate() + 30);
-
-    const drugs = await Drug.find({
-      expiryDate: {
-        $gte: today,
-        $lte: thirtyDaysFromNow
-      }
-    }).sort({ expiryDate: 1 });
-
-    res.json({
-      count: drugs.length,
-      drugs
-    });
-
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to fetch expiring drugs",
-      error: error.message
-    });
-  }
-});
-
 // GET dashboard statistics
-router.get("/stats", protect, async (req, res) => {
+router.get("/", protect, async (req, res) => {
   try {
-    const totalDrugs = await Drug.countDocuments();
+    // Basic counts
+    const totalMedicines = await Drug.countDocuments();
+    const totalWarehouses = await Warehouse.countDocuments();
 
-    const stockResult = await Drug.aggregate([
+    // Medicine stock statistics
+    const lowStockMedicines = await Drug.countDocuments({
+      status: "Low Stock"
+    });
+
+    const outOfStockMedicines = await Drug.countDocuments({
+      status: "Out of Stock"
+    });
+
+    const availableMedicines = await Drug.countDocuments({
+      status: "Available"
+    });
+
+    // Shipment statistics
+    const pendingShipments = await StockMovement.countDocuments({
+      status: "Pending"
+    });
+
+    const inTransitShipments = await StockMovement.countDocuments({
+      status: "In Transit"
+    });
+
+    const deliveredShipments = await StockMovement.countDocuments({
+      status: "Delivered"
+    });
+
+    const cancelledShipments = await StockMovement.countDocuments({
+      status: "Cancelled"
+    });
+
+    const activeShipments =
+      pendingShipments + inTransitShipments;
+
+    // Total quantity of medicines in inventory
+    const inventoryResult = await Drug.aggregate([
       {
         $group: {
           _id: null,
-          totalStock: { $sum: "$quantity" }
+          totalQuantity: { $sum: "$quantity" }
         }
       }
     ]);
 
-    const totalStock =
-      stockResult.length > 0 ? stockResult[0].totalStock : 0;
-
-    const lowStock = await Drug.countDocuments({
-      status: "Low Stock"
-    });
-
-    const outOfStock = await Drug.countDocuments({
-      status: "Out of Stock"
-    });
-
-    const expired = await Drug.countDocuments({
-      status: "Expired"
-    });
-
-    const totalMovements = await StockMovement.countDocuments();
-
-    const pendingMovements = await StockMovement.countDocuments({
-      status: "Pending"
-    });
-
-    const inTransitMovements = await StockMovement.countDocuments({
-      status: "In Transit"
-    });
-
-    const deliveredMovements = await StockMovement.countDocuments({
-      status: "Delivered"
-    });
+    const totalInventory =
+      inventoryResult.length > 0
+        ? inventoryResult[0].totalQuantity
+        : 0;
 
     res.json({
-      totalDrugs,
-      totalStock,
-      lowStock,
-      outOfStock,
-      expired,
-      totalMovements,
-      pendingMovements,
-      inTransitMovements,
-      deliveredMovements
+      medicines: {
+        total: totalMedicines,
+        available: availableMedicines,
+        lowStock: lowStockMedicines,
+        outOfStock: outOfStockMedicines,
+        totalInventory
+      },
+
+      warehouses: {
+        total: totalWarehouses
+      },
+
+      shipments: {
+        active: activeShipments,
+        pending: pendingShipments,
+        inTransit: inTransitShipments,
+        delivered: deliveredShipments,
+        cancelled: cancelledShipments
+      }
     });
 
   } catch (error) {
