@@ -9,6 +9,7 @@ const stockMovementRoutes = require("./routes/stockMovementRoutes");
 const authRoutes = require("./routes/authRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 const warehouseRoutes = require("./routes/warehouseRoutes");
+const orderRoutes = require("./routes/orderRoutes");
 
 require("dotenv").config();
 
@@ -26,6 +27,7 @@ app.use("/api/movements", stockMovementRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/warehouses", warehouseRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Test route
 app.get("/", (req, res) => {
